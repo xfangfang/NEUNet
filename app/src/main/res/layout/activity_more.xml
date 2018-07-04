@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context="com.lalala.fangs.neunet.MoreActivity">
+
+    <RelativeLayout
+
+        android:id="@+id/more_activity_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+
+        <TextView
+            android:id="@+id/more_text_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:text="20154409"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/more_activity_button_pause"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_pause_background"
+            android:text="暂停"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_below="@id/more_text_username"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:background="#20000000" />
+
+    </RelativeLayout>
+
+    <com.lalala.fangs.view.IgnoreXScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:layout_below="@id/more_activity_header_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/more_activity_root_devices_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_method"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:lineSpacingExtra="4sp"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.lalala.fangs.view.TableView
+                        android:id="@+id/tableview_method"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:dividerColor="#e1e1e1"
+                        app:dividerWidth="1px"
+                        app:headerColor="#00ffffff"
+                        app:headerTextColor="#111111"
+                        app:headerTextSize="14dp"
+                        app:rowHeight="36dp"
+                        app:textColor="#999999"
+                        app:textSize="14dp" />
+
+                    <com.lalala.fangs.view.TableView
+                        android:id="@+id/tableview_method2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:dividerColor="#e1e1e1"
+                        app:dividerWidth="1px"
+                        app:headerColor="#00ffffff"
+                        app:headerTextColor="#111111"
+                        app:headerTextSize="14dp"
+                        app:rowHeight="36dp"
+                        app:textColor="#999999"
+                        app:textSize="14dp" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:lineSpacingExtra="4sp"
+                        android:text="结算信息（每月月初结算上月使用情况）"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <lecho.lib.hellocharts.view.LineChartView
+                        android:id="@+id/detail_chartView"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_payList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:lineSpacingExtra="4sp"
+                        android:text="缴费记录"
+                        android:textAlignment="textStart"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.lalala.fangs.view.TableView
+                        android:id="@+id/tableview_payList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:dividerColor="#e1e1e1"
+                        app:dividerWidth="1px"
+                        app:headerColor="#00ffffff"
+                        app:headerTextColor="#111111"
+                        app:headerTextSize="14dp"
+                        app:rowHeight="36dp"
+                        app:textColor="#999999"
+                        app:textSize="14dp" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detail_chartView"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:lineSpacingExtra="4sp"
+                        android:text="修改密码"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp">
+
+                        <EditText
+                            android:id="@+id/more_activity_editView_old"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="旧密码"
+                            android:inputType="textPassword"
+                            android:maxLength="64"
+                            android:maxLines="1" />
+
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp">
+
+                        <EditText
+                            android:id="@+id/more_activity_editView_new1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="新密码第一次"
+                            android:inputType="textPassword"
+                            android:maxLength="64"
+                            android:maxLines="1" />
+
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp">
+
+                        <EditText
+                            android:id="@+id/more_activity_editView_new2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="新密码第二次"
+                            android:inputType="textPassword"
+                            android:maxLength="64"
+                            android:maxLines="1" />
+
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/more_activity_button_change_password"
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="right"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/button_pause_background"
+                        android:text="修改"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_margin="16dp"
+                    android:background="#80000000" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center_horizontal"
+                    android:text="Copyright© 2015-2017 东大网关君.\nAll rights reserved." />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.lalala.fangs.view.IgnoreXScrollView>
+
+
+</RelativeLayout>

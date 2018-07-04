@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/about"
+        android:title="设置"/>
+    <item
+        android:id="@+id/someNew"
+        android:title="踩到蛋了"/>
+    <item
+        android:id="@+id/menu_contact"
+        android:title="作者Github"/>
+    <item
+        android:id="@+id/finish"
+        android:title="不舍地退出网关君"/>
+</menu>

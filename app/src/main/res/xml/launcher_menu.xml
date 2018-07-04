@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launcher_menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <menu
+        android:title="@string/activity_string_infor"
+        data="flyme_3dtouch://com.lalala.fangs.neunet/infor"
+        icon="&#xe093;" />
+
+    <menu
+        android:title="@string/sign_in"
+        data="flyme_3dtouch://com.lalala.fangs.neunet/sign_in"
+        icon="&#xe0a2;" />
+
+    <menu
+        android:title="@string/sign_out"
+        data="flyme_3dtouch://com.lalala.fangs.neunet/sign_out"
+        icon="&#xe09e;" />
+
+    <menu
+        android:title="@string/force_sign"
+        data="flyme_3dtouch://com.lalala.fangs.neunet/force"
+        icon="&#xe0d8;" />
+</launcher_menu>

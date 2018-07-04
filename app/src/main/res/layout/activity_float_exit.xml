@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/floatExitActivity_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FloatActivity">
+
+    <ProgressBar
+        android:id="@+id/floatExitActivity_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"/>
+
+
+    <TextView
+        android:id="@+id/floatExitActivity_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="退出中..."
+        android:textColor="@android:color/white"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/floatExitImgBtn_cancel"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
+        android:background="#00000000"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_cancel" />
+
+</RelativeLayout>

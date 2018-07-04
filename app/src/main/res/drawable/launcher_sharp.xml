@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+    <item>
+        <shape
+            android:shape="rectangle" >
+            <!-- 设置圆角矩形 -->
+            <corners android:radius="4dp" />
+
+            <solid android:color="#FAFAFA" />
+
+        </shape>
+    </item>
+
+
+    <item
+        android:left="50dp"
+        android:right="50dp"
+        android:gravity="center">
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher_512"/>
+    </item>
+
+</layer-list>

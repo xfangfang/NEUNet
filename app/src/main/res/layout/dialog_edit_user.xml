@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/dialog_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="编辑用户"
+        android:layout_marginTop="8dp"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/dialog_delete"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:text="删除"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_pause_background"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignTop="@+id/dialog_username"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="64dp"
+            android:layout_marginRight="64dp"
+            android:id="@+id/textInputLayout"
+            android:layout_marginTop="27dp"
+            android:layout_below="@+id/dialog_delete"
+            android:layout_centerHorizontal="true">
+
+            <EditText
+                android:id="@+id/dialog_editText_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="密码"
+                android:inputType="textUri"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout3"
+        android:layout_below="@+id/textInputLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="20dp">
+        <Button
+            android:id="@+id/dialog_button_find"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="管理"
+            android:background="@color/cardview_light_background"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/dialog_button_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:textColor="@android:color/white"
+            android:background="@color/cardview_dark_background"
+            android:text="修改"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">NeuNet</string>
+    <string name="hello">haha</string>
+    <string name="hello_world_n">Hello World\n</string>
+    <string name="idcard">IdCard</string>
+    <string name="password">password</string>
+    <string name="force_sign">强制登录</string>
+    <string name="sign_in">登录</string>
+    <string name="sign_out">退出</string>
+    <string name="activity_string_infor">设置</string>
+</resources>

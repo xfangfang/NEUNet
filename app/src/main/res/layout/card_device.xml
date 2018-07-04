@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="4dp"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/card_online_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="16dp"
+            tools:src="@mipmap/ic_pc" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/card_online_device"
+            android:layout_toEndOf="@+id/card_online_device">
+
+            <TextView
+                android:id="@+id/card_online_text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1997 02 21"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/card_online_text_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="0.0.0.0"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/card_online_btn_offline"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_pause_background"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:text="下线"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
+

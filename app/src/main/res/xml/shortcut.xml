@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_setting"
+        android:shortcutDisabledMessage="@string/hello"
+        android:shortcutId="publish"
+        android:shortcutLongLabel="@string/activity_string_infor"
+        android:shortcutShortLabel="@string/activity_string_infor">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.lalala.fangs.neunet.AboutActivity"
+            android:targetPackage="com.lalala.fangs.neunet" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_logoff"
+        android:shortcutDisabledMessage="@string/hello"
+        android:shortcutId="floatExit"
+        android:shortcutLongLabel="@string/sign_out"
+        android:shortcutShortLabel="@string/sign_out">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.lalala.fangs.neunet.FloatExitActivity"
+            android:targetPackage="com.lalala.fangs.neunet" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_login"
+        android:shortcutDisabledMessage="@string/hello"
+        android:shortcutId="float"
+        android:shortcutLongLabel="@string/sign_in"
+        android:shortcutShortLabel="@string/sign_in">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.lalala.fangs.neunet.FloatActivity"
+            android:targetPackage="com.lalala.fangs.neunet" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_force"
+        android:shortcutDisabledMessage="@string/hello"
+        android:shortcutId="force"
+        android:shortcutLongLabel="@string/force_sign"
+        android:shortcutShortLabel="@string/force_sign">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.lalala.fangs.neunet.FloatForceActivity"
+            android:targetPackage="com.lalala.fangs.neunet" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+
+</shortcuts>

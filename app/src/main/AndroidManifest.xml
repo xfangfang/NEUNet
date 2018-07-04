@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lalala.fangs.neunet">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+
+    <application xmlns:tools="http://schemas.android.com/tools"
+        android:name=".AndroidApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_512"
+        android:label="网关君"
+        android:supportsRtl="true"
+        tools:replace="android:label">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcut" />
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@style/AppTheme"
+            android:icon="@drawable/ic_setting">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="com.lalala.fangs.neunet"
+                    android:path="/infor"
+                    android:scheme="flyme_3dtouch" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".MoreActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".WebActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FloatActivity"
+            android:excludeFromRecents="true"
+            android:icon="@drawable/ic_login"
+            android:label="@string/sign_in"
+            android:theme="@style/AppTheme.Float">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="com.lalala.fangs.neunet"
+                    android:path="/sign_in"
+                    android:scheme="flyme_3dtouch" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FloatExitActivity"
+            android:excludeFromRecents="true"
+            android:icon="@drawable/ic_logoff"
+            android:label="@string/sign_out"
+            android:theme="@style/AppTheme.Float">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="com.lalala.fangs.neunet"
+                    android:path="/sign_out"
+                    android:scheme="flyme_3dtouch" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FloatForceActivity"
+            android:excludeFromRecents="true"
+            android:icon="@drawable/ic_force"
+            android:label="@string/force_sign"
+            android:theme="@style/AppTheme.Float">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="com.lalala.fangs.neunet"
+                    android:path="/force"
+                    android:scheme="flyme_3dtouch" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59610c2707fe657fed000fde" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="kuan" />
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="9aeb8797a5b149e32c56a16eb2cb44aa" />
+        <meta-data
+            android:name="android.app.shortcuts"
+            android:resource="@xml/shortcut" />
+        <meta-data
+            android:name="android.3dtouch.launcher_menu"
+            android:resource="@xml/launcher_menu" />
+
+    </application>
+
+</manifest>
