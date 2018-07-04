@@ -8,7 +8,7 @@ android {
         applicationId "com.lalala.fangs.neunet"
         minSdkVersion 23
         targetSdkVersion 25
-        versionCode 3
+        versionCode 4
         versionName "3.2"
     }
     buildTypes {
