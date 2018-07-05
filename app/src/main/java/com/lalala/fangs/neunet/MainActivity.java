@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textMessage;
     private ImageView ImageBackground;
     private TextView textHint;
-    private String FIRSTTIME = "firstTime3.0";
+    private String FIRSTTIME = "firstTime3.2";
 
 
 

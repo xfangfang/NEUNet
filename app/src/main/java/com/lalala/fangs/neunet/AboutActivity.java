@@ -28,7 +28,7 @@ public class AboutActivity extends AppCompatActivity{
     private boolean isAutoLogin;
     private boolean isPCLogin;
     private final String SETTING="SETTING";
-    private String FIRSTTIME = "firstTime3.0";
+    private String FIRSTTIME = "firstTime3.2";
 
 
     @Override
@@ -309,7 +309,7 @@ public class AboutActivity extends AppCompatActivity{
 
     public void openGithub(View view) {
         Intent intent = new Intent();
-        intent.setData(Uri.parse("https://github.com/xfangfang"));
+        intent.setData(Uri.parse("https://github.com/xfangfang/NEUNet"));
         intent.setAction(Intent.ACTION_VIEW);
         this.startActivity(intent);
     }
