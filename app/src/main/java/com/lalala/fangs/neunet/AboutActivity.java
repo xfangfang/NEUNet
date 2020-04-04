@@ -1,9 +1,12 @@
 package com.lalala.fangs.neunet;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.lalala.fangs.utils.ShortcutReceiver;
 import com.umeng.analytics.MobclickAgent;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public class AboutActivity extends AppCompatActivity{
@@ -331,5 +335,47 @@ public class AboutActivity extends AppCompatActivity{
         intent.setData(Uri.parse("https://github.com/xfangfang/NEUNet"));
         intent.setAction(Intent.ACTION_VIEW);
         this.startActivity(intent);
+    }
+
+
+    /**
+     * 判断支付宝客户端是否已安装，建议调用转账前检查
+     * @return 支付宝客户端是否已安装
+     */
+    public boolean hasInstalledAlipayClient() {
+        String ALIPAY_PACKAGE_NAME = "com.eg.android.AlipayGphone";
+        PackageManager pm = getApplicationContext().getPackageManager();
+        try {
+            PackageInfo info = pm.getPackageInfo(ALIPAY_PACKAGE_NAME, 0);
+            return info != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /***
+     * 支付宝转账
+     * **/
+    public void openALiPay(View view){
+        String url1="intent://platformapi/startapp?saId=10000007&" +
+                "clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2Fa6x05115dwlymstrxftrhb3%3F_s" +
+                "%3Dweb-other#Intent;" +
+                "scheme=alipayqr;package=com.eg.android.AlipayGphone;end";
+        Intent intent = null;
+        Toast.makeText(getApplicationContext(),"感谢您的心意！🥰",Toast.LENGTH_SHORT).show();
+        if(hasInstalledAlipayClient()){
+            try {
+                intent = Intent.parseUri(url1 ,Intent.URI_INTENT_SCHEME );
+                startActivity(intent);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(),"捐赠失败",Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"未安装支付宝",Toast.LENGTH_SHORT).show();
+        }
     }
 }

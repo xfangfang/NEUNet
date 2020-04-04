@@ -506,7 +506,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="thirdParty"
+            android:onClick="openALiPay"
             android:clickable="true"
             android:background="?android:selectableItemBackground">
             <LinearLayout
@@ -520,7 +520,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="32dp"
                     android:layout_marginTop="16dp"
-                    android:text="第三方"
+                    android:text="捐赠"
                     android:textColor="#A0000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -529,7 +529,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginLeft="32dp"
-                    android:text="感谢众多开源程序员"/>
+                    android:text="给作者买杯咖啡～"/>
             </LinearLayout>
 
 
