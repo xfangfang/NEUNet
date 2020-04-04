@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +79,7 @@ public class MoreActivity extends AppCompatActivity {
     private Button moreActivityButtonPause;
     private LineChartView detailChartView;
     private TableView tableviewPayList;
+    private ProgressBar progressBar;
 
 
 
@@ -118,6 +120,7 @@ public class MoreActivity extends AppCompatActivity {
         moreActivityButtonPause = (Button) findViewById(R.id.more_activity_button_pause);
         detailChartView = (LineChartView) findViewById(R.id.detail_chartView);
         tableviewPayList = (TableView) findViewById(R.id.tableview_payList);
+        progressBar = (ProgressBar) findViewById(R.id.more_activity_progressBar);
 
 
 
@@ -148,51 +151,6 @@ public class MoreActivity extends AppCompatActivity {
         detailChartView.setViewportCalculationEnabled(false);
     }
 
-    private void initDialog() {
-        dlg.show();
-        dlg.setCancelable(false);
-        Window window = dlg.getWindow();
-        window.setContentView(R.layout.dialog_verifycode);
-        window.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
-                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN |
-                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-
-        dialogButtonCancle = (Button) window.findViewById(R.id.dialog_button_cancle);
-        dialogButtonOk = (Button) window.findViewById(R.id.dialog_button_ok);
-        dialogImageVerifycode =
-                (ImageView) window.findViewById(R.id.dialog_image_verifycode);
-        dialogEditTextVerifycode = (EditText) window.findViewById(R.id.dialog_editText_verifycode);
-        dialogImageVerifycode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                neuNetworkCenterClient.getMoreInfor(true);
-            }
-        });
-
-        dialogButtonCancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        dialogButtonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String code = dialogEditTextVerifycode.getText().toString();
-                if(!code.isEmpty()) {
-                    neuNetworkCenterClient.loginNetWorkCenter(
-                            user.getUsername(),
-                            user.getPassword(),
-                            code);
-                    dlg.dismiss();
-                }
-            }
-        });
-    }
-
     private void clearPasswordEditText() {
         moreActivityEditViewOld.setText("");
         moreActivityEditViewNew1.setText("");
@@ -210,24 +168,7 @@ public class MoreActivity extends AppCompatActivity {
         moreTextUsername.setText(user.getUsername());
         res = State.getStateMap();
 
-
-        dlg = new AlertDialog.Builder(MoreActivity.this).create();
-        dlg.setView(LayoutInflater.from(this).inflate(R.layout.dialog_verifycode, null));
-
-        neuNetworkCenterClient = new NeuNetworkCenter(MoreActivity.this);
-
-        neuNetworkCenterClient.setOnVerifyCodeLoadDoneListener(new NeuNetworkCenter.OnVerifyCodeLoadDoneListener() {
-            @Override
-            public void loadVerifyCodeDone(String url, String session) {
-                if (!dlg.isShowing()) {
-                    initDialog();
-                }
-                GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
-                        .addHeader("Cookie", session)
-                        .build());
-                Glide.with(MoreActivity.this).load(glideUrl).into(dialogImageVerifycode);
-            }
-        });
+        neuNetworkCenterClient = new NeuNetworkCenter(MoreActivity.this, user);
 
         neuNetworkCenterClient.setOnUserStatusListener(new NeuNetworkCenter.OnUserStatus() {
 
@@ -238,21 +179,20 @@ public class MoreActivity extends AppCompatActivity {
                     case LOGIN_SUCCESS:
                         neuNetworkCenterClient.getFinancialCheckoutList();
                         neuNetworkCenterClient.getFinancialPayList();
-                        dlg.dismiss();
 
                         //统计登录网络中心次数信息
                         HashMap<String, String> map = new HashMap<>();
                         map.put("user", user.getUsername());
                         MobclickAgent.onEvent(MoreActivity.this, "loginNeuNetworkCenterSuccess", map);
-
+                        progressBar.setVisibility(View.INVISIBLE);
                         break;
                     case WRONG_USER_OR_PASSWORD:
+                        progressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(getApplicationContext(), res.get(code), Toast.LENGTH_SHORT).show();
-                        dlg.dismiss();
                         finish();
                     default:
+                        finish();
                         Toast.makeText(getApplicationContext(), res.get(code), Toast.LENGTH_SHORT).show();
-                        dlg.show();
                 }
             }
 
@@ -312,6 +252,7 @@ public class MoreActivity extends AppCompatActivity {
             public void offline(boolean isSuccess, final View v) {
                 if (isSuccess) {
                     moreActivityRootDevicesLayout.removeAllViews();
+                    progressBar.setVisibility(View.VISIBLE);
 
                     neuNetworkCenterClient.getMoreInfor();
 

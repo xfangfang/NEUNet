@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textMessage;
     private ImageView ImageBackground;
     private TextView textHint;
-    private String FIRSTTIME = "firstTime3.2";
+    private String FIRSTTIME = "firstTime3.3";
 
 
 
@@ -351,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (Status == STATUS.ONLINE) {
                     if (currentUser != null) {
-                        exitAll(currentUser);
+                        exit(currentUser);
                     }
                 } else if (Status == STATUS.OFFLINE) {
                     if (currentUser != null) {
@@ -361,29 +360,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        textUsername.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        v.startAnimation(animationUp);
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        v.startAnimation(animationDown);
-                        break;
-                }
-                return false;
-            }
-        });
-
-        textUsername.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentUser != null) {
-                    exitAll(currentUser);
-                }
-            }
-        });
 
         guide();
     }
@@ -410,17 +386,6 @@ public class MainActivity extends AppCompatActivity {
         animation.setDuration(0);
         animation.setFillAfter(true);
 
-
-        ChainTourGuide tourGuide0 = ChainTourGuide.init(MainActivity.this)
-                .setToolTip(new ToolTip()
-                        .setTitle("用户名")
-                        .setDescription("点击下线全部设备")
-                        .setBackgroundColor(Color.parseColor("#EB3349"))
-                        .setShadow(false)
-                        .setGravity(Gravity.RIGHT)
-                        .setEnterAnimation(animation)
-                )
-                .playLater(textUsername);
 
         ChainTourGuide tourGuide1 = ChainTourGuide.init(this)
                 .setToolTip(new ToolTip()
@@ -482,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
         ChainTourGuide tourGuide6 = ChainTourGuide.init(this)
                 .setToolTip(new ToolTip()
                         .setTitle("设置")
-                        .setDescription("自动登录\n免流量直播")
+                        .setDescription("免流量直播")
                         .setBackgroundColor(Color.parseColor("#EB3349"))
                         .setGravity(Gravity.TOP)
                         .setShadow(false)
@@ -511,8 +476,8 @@ public class MainActivity extends AppCompatActivity {
                                     // 未安装手Q或安装的版本不支持
                                 }                            }
                         });
-                        ab.setTitle("你好");
-                        ab.setMessage("欢迎加群\n532607431\n获取更多使用校内应用");
+                        ab.setTitle("校友你好");
+                        ab.setMessage("欢迎加群\n532607431\n获取更多东大校内应用");
                         AlertDialog dialog = ab.create();
                         dialog.show();
 
@@ -521,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
                 .playLater(fabSetting);
 
         Sequence sequence = new Sequence.SequenceBuilder()
-                .add(tourGuide0, tourGuide1, tourGuide2, tourGuide3, tourGuide4, tourGuide5, tourGuide6)
+                .add(tourGuide1, tourGuide2, tourGuide3, tourGuide4, tourGuide5, tourGuide6)
                 .setDefaultPointer(null)
                 .setDefaultOverlay(new Overlay()
                         .setOnClickListener(new View.OnClickListener() {
@@ -604,6 +569,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecentUser(User u) {
+        neuNetClient.clearCookie();
+        neuNetworkCenter.clearCookie();
         currentUser = u;
         u.saveRecentLogin(MainActivity.this);
     }
@@ -663,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
         res = State.getStateMap();
         userList = User.loadAll(getBaseContext());
         currentUser = getRecentUser();
-        neuNetworkCenter = new NeuNetworkCenter(MainActivity.this);
+        neuNetworkCenter = new NeuNetworkCenter(MainActivity.this, currentUser);
         getJianshuMessage = new GetJianshuMessage();
 
 

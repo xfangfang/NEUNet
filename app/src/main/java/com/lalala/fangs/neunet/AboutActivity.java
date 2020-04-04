@@ -1,12 +1,20 @@
 package com.lalala.fangs.neunet;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -15,6 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lalala.fangs.utils.ShortcutReceiver;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -28,7 +37,7 @@ public class AboutActivity extends AppCompatActivity{
     private boolean isAutoLogin;
     private boolean isPCLogin;
     private final String SETTING="SETTING";
-    private String FIRSTTIME = "firstTime3.2";
+    private String FIRSTTIME = "firstTime3.3";
 
 
     @Override
@@ -264,46 +273,56 @@ public class AboutActivity extends AppCompatActivity{
     }
 
     public void addShortcut(View view) {
-        Intent addShortcutIntent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        addShortcutIntent.putExtra("duplicate", false);
-        addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.sign_in));
-        addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-            Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        R.drawable.ic_login));
-        Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
-        launcherIntent.setClass(getApplicationContext(), FloatActivity.class);
-        launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        addShortcutIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, launcherIntent);
-        sendBroadcast(addShortcutIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Context context = AboutActivity.this;
+            ShortcutManager shortcutManager = (ShortcutManager) context.getSystemService(Context.SHORTCUT_SERVICE);
+            if (shortcutManager.isRequestPinShortcutSupported()) {
+                Intent launcherIntent = new Intent(context, FloatActivity.class);
+                launcherIntent.setAction(Intent.ACTION_MAIN);
+                launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                ShortcutInfo info = new ShortcutInfo.Builder(context, "neunet-login")
+                        .setIcon(Icon.createWithResource(context,R.drawable.ic_login))
+                        .setShortLabel( getResources().getString(R.string.sign_in))
+                        .setIntent(launcherIntent)
+                        .build();
+                //当添加快捷方式的确认弹框弹出来时，将被回调
+                PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
 
-        addShortcutIntent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        addShortcutIntent.putExtra("duplicate", false);
-        addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.sign_out));
-        addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+            }
+
+        }
+        else {
+
+            Intent addShortcutIntent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+            addShortcutIntent.putExtra("duplicate", false);
+            addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.sign_in));
+            addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        R.drawable.ic_logoff));
-        launcherIntent = new Intent(Intent.ACTION_MAIN);
-        launcherIntent.setClass(getApplicationContext(), FloatExitActivity.class);
-        launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        addShortcutIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, launcherIntent);
-        sendBroadcast(addShortcutIntent);
+                            R.drawable.ic_login));
+            Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
+            launcherIntent.setClass(getApplicationContext(), FloatActivity.class);
+            launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            addShortcutIntent
+                    .putExtra(Intent.EXTRA_SHORTCUT_INTENT, launcherIntent);
+            sendBroadcast(addShortcutIntent);
 
-        addShortcutIntent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        addShortcutIntent.putExtra("duplicate", false);
-        addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.force_sign));
-        addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        R.drawable.ic_force));
-        launcherIntent = new Intent(Intent.ACTION_MAIN);
-        launcherIntent.setClass(getApplicationContext(), FloatForceActivity.class);
-        launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        addShortcutIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, launcherIntent);
-        sendBroadcast(addShortcutIntent);
+            addShortcutIntent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+            addShortcutIntent.putExtra("duplicate", false);
+            addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getResources().getString(R.string.sign_out));
+            addShortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                    Intent.ShortcutIconResource.fromContext(getApplicationContext(),
+                            R.drawable.ic_logoff));
+            launcherIntent = new Intent(Intent.ACTION_MAIN);
+            launcherIntent.setClass(getApplicationContext(), FloatExitActivity.class);
+            launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            addShortcutIntent
+                    .putExtra(Intent.EXTRA_SHORTCUT_INTENT, launcherIntent);
+            sendBroadcast(addShortcutIntent);
 
-        Toast.makeText(getApplicationContext(),"去桌面看看添加了没有？",Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(getApplicationContext(), "去桌面看看添加了没有？", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

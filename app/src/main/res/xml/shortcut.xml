@@ -43,19 +43,6 @@
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
 
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/ic_force"
-        android:shortcutDisabledMessage="@string/hello"
-        android:shortcutId="force"
-        android:shortcutLongLabel="@string/force_sign"
-        android:shortcutShortLabel="@string/force_sign">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="com.lalala.fangs.neunet.FloatForceActivity"
-            android:targetPackage="com.lalala.fangs.neunet" />
-        <categories android:name="android.shortcut.conversation" />
-    </shortcut>
 
 
 </shortcuts>

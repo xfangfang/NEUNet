@@ -15,8 +15,4 @@
         data="flyme_3dtouch://com.lalala.fangs.neunet/sign_out"
         icon="&#xe09e;" />
 
-    <menu
-        android:title="@string/force_sign"
-        data="flyme_3dtouch://com.lalala.fangs.neunet/force"
-        icon="&#xe0d8;" />
 </launcher_menu>

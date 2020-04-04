@@ -11,6 +11,10 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import java.io.IOException;
 
 import okhttp3.FormBody;
@@ -50,6 +54,10 @@ public class NeuNet {
         this.context = c;
         cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+    }
+
+    public void clearCookie() {
+        cookieJar.clear();
     }
 
     public void exit(final String userStr, final String passwordStr, boolean all) {
@@ -163,6 +171,7 @@ public class NeuNet {
 
         String res;
         String userName;
+        String password;
         boolean isPc;
 
         @Override
@@ -173,23 +182,21 @@ public class NeuNet {
         protected Boolean doInBackground(String... params) {
 
             userName = params[0];
+            password = params[1];
             isPc = ! params[2].toLowerCase().contains("android");
 
-            String updateUrl = "https://ipgw.neu.edu.cn/srun_portal_pc.php";
-            OkHttpClient client = new OkHttpClient().newBuilder().
-                    sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
+            Log.e(TAG, "doInBackground: login user "+userName );
+
+            // get lt and execution
+            String eOneUrl = "https://pass.neu.edu.cn/tpass/login?service=https://ipgw.neu.edu.cn/srun_cas.php";
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
                     .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+                    .cookieJar(cookieJar)
                     .build();
-            FormBody.Builder builder = new FormBody.Builder();
-            builder.add("action", "login")
-                    .add("username", params[0])
-                    .add("password", params[1])
-                    .add("ac_id", "1")
-                    .add("save_me", "0")
-                    .add("ajax", "1");
-            FormBody body = builder.build();
+            FormBody body = new FormBody.Builder().build();
             Request request = new Request.Builder()
-                    .url(updateUrl)
+                    .url(eOneUrl)
                     .addHeader("User-Agent", params[2])
                     .post(body)
                     .build();
@@ -197,11 +204,42 @@ public class NeuNet {
             try {
                 response = client.newCall(request).execute();
                 res = response.body().string();
+                try {
+                    Document doc = Jsoup.parse(res);
+                    String lt = doc.select("#lt").first().val();
+                    String execution = doc.select("input[name='execution']").first().val();
+
+                    Log.e(TAG,"lt: "+lt);
+                    Log.e(TAG,"exec: "+execution);
+
+                    // login
+                    FormBody.Builder builder = new FormBody.Builder();
+                    builder.add("rsa", userName+password+lt)
+                            .add("username",userName)
+                            .add("password", password)
+                            .add("lt", lt)
+                            .add("ul", ""+userName.length())
+                            .add("pl", ""+password.length())
+                            .add("_eventId","submit")
+                            .add("execution",execution);
+                    body = builder.build();
+                    request = new Request.Builder()
+                            .url(eOneUrl)
+                            .addHeader("User-Agent", params[2])
+                            .post(body)
+                            .build();
+                    response = client.newCall(request).execute();
+                    res = response.body().string();
+                    return true;
+                } catch (Exception e){
+                    Log.e(TAG, "doInBackground: allready login" );
+                    return true;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
             }
-            return true;
+
         }
 
         @Override
@@ -210,15 +248,13 @@ public class NeuNet {
 
             if (res == null) {
                 listener.getState(LOGIN_ERROR);
-            } else if (res.contains("网络已连接") || res.contains("login_ok")) {
+            } else if (res.contains(userName)) {
                 if(isPc){
                     listener.getState(PC_LOGIN_SUCCESS);
                 }else {
                     listener.getState(LOGIN_SUCCESS);
                 }
-            } else if (res.contains("E2531")) {
-                listener.getState(WRONG_USERNAME);
-            } else if (res.contains("E2553")) {
+            } else if (res.contains("锁定")) {
                 listener.getState(WRONG_PASSWORD);
             } else if (res.contains("E2616")) {
                 listener.getState(IS_OVERDUE);
@@ -226,7 +262,7 @@ public class NeuNet {
                 listener.getState(USER_DIASBLE);
             } else if (res.contains("E2620")) {
                 listener.getState(ALREADY_CONNECTED);
-            } else if(res.contains("Portal not response")){
+            } else if(res.contains("Portal not response") || res.contains("访问被拒绝")){
                 listener.getState(NOT_RESPONSE);
             }else {
                 listener.getState(LOGIN_ERROR);

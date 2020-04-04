@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.lalala.fangs.data.User;
 import com.lalala.fangs.data.table.DetailLogItem;
 import com.lalala.fangs.data.table.FinancialCheckoutItem;
 import com.lalala.fangs.data.table.FinancialPayItem;
@@ -43,6 +44,7 @@ import static com.lalala.fangs.utils.State.NEW_PASSWORD_IS_NOT_THE_SAME;
 import static com.lalala.fangs.utils.State.NEW_PASSWORD_IS_THE_SAME_AS_OLD_ONE;
 import static com.lalala.fangs.utils.State.NEW_PASSWORD_IS_TOO_LONG;
 import static com.lalala.fangs.utils.State.NEW_PASSWORD_IS_TOO_SHORT;
+import static com.lalala.fangs.utils.State.NOT_RESPONSE;
 import static com.lalala.fangs.utils.State.NOT_WIFI;
 import static com.lalala.fangs.utils.State.NO_WIFI;
 import static com.lalala.fangs.utils.State.OLD_PASSWORD_IS_EMPTY;
@@ -58,14 +60,14 @@ import static com.lalala.fangs.utils.State.WRONG_USER_OR_PASSWORD;
 public class NeuNetworkCenter {
 
     private Context context;
+    private User user;
     private IgnoreTimeCookieJar cookieJar;
     private String csrf_token;
-    private String verifyCodePicUrl;
     static OkHttpClient client;
 
-    public NeuNetworkCenter(Context c) {
+    public NeuNetworkCenter(Context c, User user) {
         this.context = c;
-
+        this.user = user;
 
         cookieJar =
                 new IgnoreTimeCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
@@ -73,6 +75,12 @@ public class NeuNetworkCenter {
         client = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .build();
+
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//                .sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
+//                .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+//                .cookieJar(cookieJar)
+//                .build();
 
     }
 
@@ -107,23 +115,52 @@ public class NeuNetworkCenter {
 
         @Override
         protected Boolean doInBackground(Boolean... params) {
-
-            String url = "http://ipgw.neu.edu.cn:8800/";
-
-
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-            okhttp3.Response response;
             if (params[0]) {
                 cookieJar.clear();
             }
+            String eOneUrl = "https://pass.neu.edu.cn/tpass/login?service=http://ipgw.neu.edu.cn:8800/sso/default/neusoft";
 
+            FormBody body = new FormBody.Builder().build();
+            Request request = new Request.Builder()
+                    .url(eOneUrl)
+                    .post(body)
+                    .build();
+            okhttp3.Response response;
             try {
                 response = client.newCall(request).execute();
                 res = response.body().string();
-                if (res == null) return false;
+                Document doc = Jsoup.parse(res);
+                try {
+                    String lt = doc.select("#lt").first().val();
+                    String execution = doc.select("input[name='execution']").first().val();
+                    Log.e(TAG, "doInBackground: need login" );
+                    Log.e(TAG,"lt: "+lt);
+                    Log.e(TAG,"exec: "+execution);
+                    // login
+                    FormBody.Builder builder = new FormBody.Builder();
+                    builder.add("rsa", user.getUsername()+user.getPassword()+lt)
+                            .add("username",user.getUsername())
+                            .add("password", user.getPassword())
+                            .add("lt", lt)
+                            .add("ul", ""+user.getUsername().length())
+                            .add("pl", ""+user.getPassword().length())
+                            .add("_eventId","submit")
+                            .add("execution",execution);
+                    body = builder.build();
+                    request = new Request.Builder()
+                            .url(eOneUrl)
+                            .post(body)
+                            .build();
+                    response = client.newCall(request).execute();
+                    res = response.body().string();
+                }
+                catch (Exception e){
+                    // 已经登录了
+                    Log.e(TAG, "doInBackground: allready login" );
+                    return true;
+                }
             } catch (IOException e) {
+                Log.e(TAG, "doInBackground: access eone error" );
                 e.printStackTrace();
                 return false;
             }
@@ -132,6 +169,7 @@ public class NeuNetworkCenter {
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
+//            Log.e(TAG, "get more infor onPostExecute: "+res );
             if (!aBoolean) {
                 cookieJar.clear();
                 if (onUserStatusListener != null) {
@@ -139,55 +177,37 @@ public class NeuNetworkCenter {
                 }
                 return;
             }
-            Document doc = Jsoup.parse(res);
+            if (onUserStatusListener != null) {
+                if (res.contains("访问被拒绝")){
+                    onUserStatusListener.stateChange(NOT_RESPONSE);
+                    return;
+                }
+
+            }
             try {
+                Document doc = Jsoup.parse(res);
                 Element csrf = doc.select("[name=csrf-token]").get(0);
                 csrf_token = csrf.attr("content");
-                try {
-                    Element picUrl = doc.select("#loginform-verifycode-image").get(0);
-                    verifyCodePicUrl = "http://ipgw.neu.edu.cn:8800/" + picUrl.attr("src");
-
-                    if (onVerifyCodeLoadDoneListener != null) {
-                        Log.e(TAG, "onPostExecute: " + verifyCodePicUrl);
-                        onVerifyCodeLoadDoneListener.loadVerifyCodeDone(verifyCodePicUrl, cookieJar.getCookieString());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    //不能填写验证码，说明已经登陆
-                    if (onUserStatusListener != null) {
-                        Log.e(TAG, "onPostExecute: 获取不到验证码，已经正常登陆");
-                        onUserStatusListener.stateChange(LOGIN_SUCCESS);
-                    }
-                    findProductInformation(res);
-                    findOnlineDevices(res);
-                    getPauseInfor(res);
+                if (onUserStatusListener != null) {
+                    Log.e(TAG, "onPostExecute: 已经登陆");
+                    onUserStatusListener.stateChange(LOGIN_SUCCESS);
                 }
+                findProductInformation(res);
+                findOnlineDevices(res);
+                getPauseInfor(res);
             } catch (Exception e) {
                 if (onUserStatusListener != null) {
                     onUserStatusListener.stateChange(LOGIN_ERROR);
                 }
                 e.printStackTrace();
             }
+
+            Log.e(TAG, "onPostExecute: more info done" );
         }
     }
 
     private static final String TAG = "NeuNetworkCenter";
 
-    public interface OnVerifyCodeLoadDoneListener {
-        void loadVerifyCodeDone(String url, String cookie);
-    }
-
-    private OnVerifyCodeLoadDoneListener onVerifyCodeLoadDoneListener;
-
-    public void setOnVerifyCodeLoadDoneListener(OnVerifyCodeLoadDoneListener l) {
-        this.onVerifyCodeLoadDoneListener = l;
-    }
-
-    public void loginNetWorkCenter(String userName, String password, String verifyCode) {
-        if (normalCheckDone(userName, password, verifyCode) && netCheck()) {
-            new loginNetworkCenterTask().execute(userName, password, verifyCode);
-        }
-    }
 
     private OnUserStatus onUserStatusListener;
 
@@ -215,69 +235,6 @@ public class NeuNetworkCenter {
 
     public void setOnUserStatusListener(OnUserStatus listener) {
         this.onUserStatusListener = listener;
-    }
-
-    private class loginNetworkCenterTask extends AsyncTask<String, Integer, Boolean> {
-        String res;
-        String user;
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            String url = "http://ipgw.neu.edu.cn:8800/";
-            user = params[0];
-
-            RequestBody formBody = new FormBody.Builder()
-                    .add("_csrf", csrf_token)
-                    .add("LoginForm[username]", params[0])
-                    .add("LoginForm[password]", params[1])
-                    .add("LoginForm[verifyCode]", params[2])
-                    .build();
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(formBody)
-                    .build();
-            okhttp3.Response response;
-            try {
-                response = client.newCall(request).execute();
-                res = response.body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-
-            if (res == null) {
-                if (onUserStatusListener != null) {
-                    onUserStatusListener.stateChange(LOGIN_ERROR);
-                }
-            } else {
-                if (onUserStatusListener != null) {
-                    if (res.contains("用户名或密码错误")) {
-                        onUserStatusListener.stateChange(WRONG_USER_OR_PASSWORD);
-                    } else if (res.contains("验证码不正确")) {
-                        onUserStatusListener.stateChange(WROGNG_VERIFYCODE);
-                    } else if (res.contains(user)) {
-                        onUserStatusListener.stateChange(LOGIN_SUCCESS);
-                        //登陆成功 查看在线设备
-                        findProductInformation(res);
-                        findOnlineDevices(res);
-                        getPauseInfor(res);
-                    } else {
-                        onUserStatusListener.stateChange(LOGIN_ERROR);
-                    }
-                }
-
-            }
-        }
     }
 
     public void changePassword(String old, String new1, String new2) {
@@ -556,7 +513,7 @@ public class NeuNetworkCenter {
         }
     }
 
-    private boolean normalCheckDone(final String userStr, final String passwordStr, final String verifyCode) {
+    private boolean normalCheckDone(final String userStr, final String passwordStr) {
         if (onUserStatusListener == null) {
             return false;
         }
@@ -565,9 +522,6 @@ public class NeuNetworkCenter {
             return false;
         } else if (passwordStr.equals("")) {
             onUserStatusListener.stateChange(EMPTY_PASSWORD);
-            return false;
-        } else if (verifyCode.equals("")) {
-            onUserStatusListener.stateChange(EMPTY_VERIFYCODE);
             return false;
         }
         ConnectivityManager coon = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

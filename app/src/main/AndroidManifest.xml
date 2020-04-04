@@ -14,6 +14,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_512"
         android:label="网关君"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         tools:replace="android:label">
         <activity
@@ -90,25 +91,6 @@
                 <data
                     android:host="com.lalala.fangs.neunet"
                     android:path="/sign_out"
-                    android:scheme="flyme_3dtouch" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".FloatForceActivity"
-            android:excludeFromRecents="true"
-            android:icon="@drawable/ic_force"
-            android:label="@string/force_sign"
-            android:theme="@style/AppTheme.Float">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="com.lalala.fangs.neunet"
-                    android:path="/force"
                     android:scheme="flyme_3dtouch" />
             </intent-filter>
         </activity>
