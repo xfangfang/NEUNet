@@ -46,7 +46,6 @@ import com.lalala.fangs.utils.NeuNetworkCenter;
 import com.lalala.fangs.utils.State;
 import com.lalala.fangs.view.ShadowView;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.message.PushAgent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     private AdapterList adapterList;
     private GetJianshuMessage getJianshuMessage;
 
-    private PushAgent mPushAgent;
     ScaleAnimation animationUp, animationDown;
     private final String SETTING = "SETTING";
     private boolean isAutoLogin;
@@ -135,35 +133,21 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.getWindow().setStatusBarColor(Color.parseColor("#9e9e9e"));
         }
 
-        mPushAgent = PushAgent.getInstance(this);
-        mPushAgent.onAppStart();
         initSP();
-
         initView();
         initData();
 
-        initSP();
+
         startWaiting();
         neuNetClient.getInfor();
 
-        PushAgent.getInstance(MainActivity.this).onAppStart();
 
     }
 
     private void initSP() {
         SharedPreferences sp = getSharedPreferences(SETTING, Context.MODE_PRIVATE);
-        isPCLogin = sp.getBoolean("pcLogin2", true);
-//        isAutoLogin = sp.getBoolean("autoLogin", false);
         isAutoLogin = false;
         isFirstTime = sp.getBoolean(FIRSTTIME, true);
-
-        if (statusImgBtn != null) {
-            statusImgBtn.setClickable(isPCLogin);
-        }
-
-        if(isFirstTime && !firstOpenToday){
-            guide();
-        }
 
     }
 
@@ -264,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
         textMessage = (TextView) findViewById(R.id.text_message);
         textHint = (TextView) findViewById(R.id.text_hint);
 
-        statusImgBtn.setClickable(isPCLogin);
         textUsername.setShadowLayer(10, 0, 0, Color.parseColor("#80555555"));
         Typeface typeface = Typeface.createFromAsset(MainActivity.this.getAssets(), "BigJohnFang.ttf");
         textUsername.setTypeface(typeface);
@@ -328,37 +311,6 @@ public class MainActivity extends AppCompatActivity {
         animationDown.setDuration(100);
         animationDown.setFillAfter(true);
 
-        statusImgBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (isPCLogin) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_UP:
-                            v.startAnimation(animationUp);
-                            break;
-                        case MotionEvent.ACTION_DOWN:
-                            v.startAnimation(animationDown);
-                            break;
-                    }
-                }
-                return false;
-            }
-        });
-
-        statusImgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Status == STATUS.ONLINE) {
-                    if (currentUser != null) {
-                        exit(currentUser);
-                    }
-                } else if (Status == STATUS.OFFLINE) {
-                    if (currentUser != null) {
-                        loginPc(currentUser);
-                    }
-                }
-            }
-        });
 
 
         guide();
@@ -901,18 +853,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void getNewBlur() {
         ImageBackground.setBackgroundColor(Color.WHITE);
-//        ImageBackground.setImageDrawable(null);
-//        try {
-//            Blurry.with(MainActivity.this)
-//                    .radius(10)
-//                    .sampling(8)
-//                    .color(Color.parseColor("#10000000"))
-//                    .async()
-//                    .capture(layoutRoot)
-//                    .into(ImageBackground);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 
@@ -937,6 +877,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cardLogin(View view) {
+        if(isFirstTime) return;
 
         if (currentUser != null) {
             if (Status == STATUS.OFFLINE) {
