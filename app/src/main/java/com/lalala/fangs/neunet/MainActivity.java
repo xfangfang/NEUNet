@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     ScaleAnimation animationUp, animationDown;
     private final String SETTING = "SETTING";
     private boolean isAutoLogin;
-    private boolean isPCLogin;
+    private boolean isGuideStart = false;
     private boolean isFirstTime;
 
     STATUS Status = STATUS.NULL;
@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         initSP();
+        guide();
     }
 
     @Override
@@ -311,16 +312,15 @@ public class MainActivity extends AppCompatActivity {
         animationDown.setDuration(100);
         animationDown.setFillAfter(true);
 
-
-
-        guide();
     }
 
     private ChainTourGuide mTourGuideHandler;
 
     private void guide() {
 
-        if (!isFirstTime) return;
+        if (!isFirstTime || isGuideStart) return;
+        isGuideStart = true;
+
 
         floatingActionsMenu.postDelayed(new Runnable() {
             @Override
@@ -415,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
                         spEdit.putBoolean(FIRSTTIME, false);
                         spEdit.commit();
                         isFirstTime = false;
+                        isGuideStart = false;
                         Toast.makeText(getApplicationContext(),"可以在\"设置\"中\n重新查看新手入门指导",Toast.LENGTH_LONG).show();
                         AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);  //(普通消息框)
                         ab.setPositiveButton("立即加群!", new DialogInterface.OnClickListener() {
