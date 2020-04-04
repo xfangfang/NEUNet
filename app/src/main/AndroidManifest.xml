@@ -99,7 +99,7 @@
             android:value="59610c2707fe657fed000fde" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="huawei" />
+            android:value="github" />
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
             android:value="9aeb8797a5b149e32c56a16eb2cb44aa" />
