@@ -1,5 +1,14 @@
+东大人登录网关的绝佳选择，~~在校~~学长工匠之作。
 
-东大人登录网关的绝佳选择，在校学长工匠之作。
+<div style="display:flex; justify-content: center;">
+<img src='images/neunetPic_01.jpg' style="height:300px;"/>
+<img src='images/neunetPic_02.jpg' style="height:300px;"/>
+<img src='images/neunetPic_03.jpg' style="height:300px;"/>
+<img src='images/neunetPic_04.jpg' style="height:300px;"/>
+<img src='images/neunetPic_05.jpg' style="height:300px;"/>
+</div>
+
+
 
 东大网关君是东大人每日登录校园网的必备应用，在简洁易用的同时，加入了更多高级功能，将复杂隐于简单之下，不失优雅。
 
@@ -14,4 +23,7 @@
 4. 独特    提供了校内电视直播组件，丰富了大家的校园生活。
 
 用户交流QQ群：532607431
-感谢大家使用～kuan
+
+最新版本3.3已上架：[华为](https://appstore.huawei.com/app/C100060339)、[小米](http://app.mi.com/details?id=com.lalala.fangs.neunet)、[酷安](https://www.coolapk.com/apk/com.lalala.fangs.neunet)
+
+感谢大家使用～
