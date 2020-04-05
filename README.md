@@ -8,7 +8,7 @@
 <img src='images/neunetPic_05.jpg' style="height:300px;"/>
 </div>
 
-
+### 简介
 
 东大网关君是东大人每日登录校园网的必备应用，在简洁易用的同时，加入了更多高级功能，将复杂隐于简单之下，不失优雅。
 
@@ -27,3 +27,7 @@
 最新版本3.3已上架：[华为](https://appstore.huawei.com/app/C100060339)、[小米](http://app.mi.com/details?id=com.lalala.fangs.neunet)、[酷安](https://www.coolapk.com/apk/com.lalala.fangs.neunet)
 
 感谢大家使用～
+
+
+### 相关应用
+[直视——校园网高清电视](https://xfangfang.github.io/NeuTV/)
