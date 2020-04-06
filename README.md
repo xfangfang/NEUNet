@@ -1,12 +1,6 @@
 东大人登录网关的绝佳选择，~~在校~~学长工匠之作。
 
-<div style="display:flex; justify-content: center;">
-<img src='images/neunetPic_01.jpg' style="height:300px;"/>
-<img src='images/neunetPic_02.jpg' style="height:300px;"/>
-<img src='images/neunetPic_03.jpg' style="height:300px;"/>
-<img src='images/neunetPic_04.jpg' style="height:300px;"/>
-<img src='images/neunetPic_05.jpg' style="height:300px;"/>
-</div>
+![NEUNET](images/neunet.jpg)
 
 ### 简介
 
