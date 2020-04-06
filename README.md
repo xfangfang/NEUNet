@@ -16,7 +16,7 @@
 
 4. 独特    提供了校内电视直播组件，丰富了大家的校园生活。
 
-用户交流QQ群：532607431
+用户交流QQ群： [532607431](https://shang.qq.com/wpa/qunwpa?idkey=1874e330e0db3e5c4e54794b45a2ac69300786ec03f7ddc44bccb8d9bcfd59f6)
 
 最新版本3.3已上架：[华为](https://appstore.huawei.com/app/C100060339)、[小米](http://app.mi.com/details?id=com.lalala.fangs.neunet)、[酷安](https://www.coolapk.com/apk/com.lalala.fangs.neunet)
 
