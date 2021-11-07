@@ -48,4 +48,6 @@ dependencies {
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
     testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
+    implementation  'com.alibaba:fastjson:1.2.73'
+
 }

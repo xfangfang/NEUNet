@@ -118,7 +118,8 @@ public class NeuNetworkCenter {
             if (params[0]) {
                 cookieJar.clear();
             }
-            String eOneUrl = "https://pass.neu.edu.cn/tpass/login?service=http://ipgw.neu.edu.cn:8800/sso/default/neusoft";
+//            String eOneUrl = "https://pass.neu.edu.cn/tpass/login?service=http://ipgw.neu.edu.cn:8800/sso/default/neusoft";
+            String eOneUrl = "https://pass.neu.edu.cn/tpass/login";
 
             FormBody body = new FormBody.Builder().build();
             Request request = new Request.Builder()
