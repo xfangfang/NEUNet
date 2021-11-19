@@ -6,12 +6,14 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -20,6 +22,8 @@ import java.io.IOException;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+
+import com.alibaba.fastjson.JSONObject;
 
 import static com.lalala.fangs.utils.State.ALL_EXIT_SUCCESS;
 import static com.lalala.fangs.utils.State.ALREADY_CONNECTED;
@@ -124,21 +128,42 @@ public class NeuNet {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            String updateUrl = "https://ipgw.neu.edu.cn/include/auth_action.php";
+//            String updateUrl = "https://ipgw.neu.edu.cn/include/auth_action.php";
+//            OkHttpClient client = new OkHttpClient().newBuilder().
+//                    sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
+//                    .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+//                    .build();
+//            FormBody.Builder builder = new FormBody.Builder();
+//            builder.add("action", "logout")
+//                    .add("username", params[0])
+//                    .add("ajax", "1");
+//            if (all) {
+//                builder.add("password", params[1]);
+//            }
+//            FormBody body = builder.build();
+//            Request request = new Request.Builder().url(updateUrl).post(body).build();
+//            okhttp3.Response response;
+//            try {
+//                response = client.newCall(request).execute();
+//                res = response.body().string();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return false;
+//            }
+//            return true;
+            String neupassLogout = "https://portal.neu.edu.cn/tp_up/logout";
+            String exitAPI = "https://ipgw.neu.edu.cn/cgi-bin/srun_portal?action=logout&username=" + params[0];
+            String referer = "https://ipgw.neu.edu.cn/srun_portal_success?ac_id=1";
+
             OkHttpClient client = new OkHttpClient().newBuilder().
                     sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
                     .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
                     .build();
-            FormBody.Builder builder = new FormBody.Builder();
-            builder.add("action", "logout")
-                    .add("username", params[0])
-                    .add("ajax", "1");
-            if (all) {
-                builder.add("password", params[1]);
-            }
-            FormBody body = builder.build();
-            Request request = new Request.Builder().url(updateUrl).post(body).build();
+
+            Request request = new Request.Builder().url(exitAPI)
+                    .header("Referer", referer).get().build();
             okhttp3.Response response;
+
             try {
                 response = client.newCall(request).execute();
                 res = response.body().string();
@@ -153,16 +178,16 @@ public class NeuNet {
         protected void onPostExecute(Boolean aBoolean) {
             if (res == null || !aBoolean) {
                 listener.getState(EXIT_ERROR);
-            } else if (res.contains("error")) {
-                listener.getState(WRONG_PASSWORD);
-            } else if (res.contains("未曾连接")) {
+            } else if (res.contains("not online")) {
                 listener.getState(NOT_CONNECTED);
-            } else {
+            } else if (res.contains("logout_ok")){
                 if (all) {
                     listener.getState(ALL_EXIT_SUCCESS);
                 } else {
                     listener.getState(EXIT_SUCCESS);
                 }
+            } else{
+                listener.getState(EXIT_ERROR);
             }
         }
     }
@@ -188,7 +213,7 @@ public class NeuNet {
             Log.e(TAG, "doInBackground: login user "+userName );
 
             // get lt and execution
-            String eOneUrl = "https://pass.neu.edu.cn/tpass/login?service=https://ipgw.neu.edu.cn/srun_cas.php";
+            String eOneUrl = "https://pass.neu.edu.cn/tpass/login";
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
                     .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
@@ -203,43 +228,74 @@ public class NeuNet {
             okhttp3.Response response;
             try {
                 response = client.newCall(request).execute();
-                res = response.body().string();
-                try {
-                    Document doc = Jsoup.parse(res);
-                    String lt = doc.select("#lt").first().val();
-                    String execution = doc.select("input[name='execution']").first().val();
 
-                    Log.e(TAG,"lt: "+lt);
-                    Log.e(TAG,"exec: "+execution);
-
-                    // login
-                    FormBody.Builder builder = new FormBody.Builder();
-                    builder.add("rsa", userName+password+lt)
-                            .add("username",userName)
-                            .add("password", password)
-                            .add("lt", lt)
-                            .add("ul", ""+userName.length())
-                            .add("pl", ""+password.length())
-                            .add("_eventId","submit")
-                            .add("execution",execution);
-                    body = builder.build();
-                    request = new Request.Builder()
-                            .url(eOneUrl)
-                            .addHeader("User-Agent", params[2])
-                            .post(body)
-                            .build();
-                    response = client.newCall(request).execute();
+                // 如果没有登录一网通办，先登录
+                if(!response.request().url().toString().contains("portal.neu.edu.cn")){
                     res = response.body().string();
-                    return true;
-                } catch (Exception e){
-                    Log.e(TAG, "doInBackground: allready login" );
-                    return true;
+                    try {
+                        Document doc = Jsoup.parse(res);
+                        String lt = doc.select("#lt").first().val();
+                        String execution = doc.select("input[name='execution']").first().val();
+
+                        Log.e(TAG,"lt: "+lt);
+                        Log.e(TAG,"exec: "+execution);
+
+                        // login
+                        FormBody.Builder builder = new FormBody.Builder();
+                        builder.add("rsa", userName+password+lt)
+                                .add("username",userName)
+                                .add("password", password)
+                                .add("lt", lt)
+                                .add("ul", ""+userName.length())
+                                .add("pl", ""+password.length())
+                                .add("_eventId","submit")
+                                .add("execution",execution);
+                        body = builder.build();
+                        request = new Request.Builder()
+                                .url(eOneUrl)
+                                .addHeader("User-Agent", params[2])
+                                .post(body)
+                                .build();
+                        response = client.newCall(request).execute();
+
+                    } catch (Exception e){
+                        Log.e(TAG, "doInBackground: allready login" );
+                        return true;
+                    }
                 }
+                // 登录过了一网通办，直接过 ipgw
+                return ticketLogin(client);
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
             }
+        }
 
+        protected boolean ticketLogin(OkHttpClient client){
+            String queryURL = "https://ipgw.neu.edu.cn/";
+            String loginURLHeader = "https://pass.neu.edu.cn/tpass/login?service=http://ipgw.neu.edu.cn/srun_portal_sso?";
+            String loginAPI = "https://ipgw.neu.edu.cn/v1/srun_portal_sso?";
+
+            Request request = new Request.Builder().url(queryURL).get().build();
+            okhttp3.Response response = null;
+            try {
+                // 获取参数，新版网关不同的接入地点参数不同
+                response = client.newCall(request).execute();
+
+                // 换取 ticket
+                request = new Request.Builder().url(loginURLHeader + response.request().url().query()).get().build();
+                response = client.newCall(request).execute();
+
+                // 调用api登录
+                request = new Request.Builder().url(loginAPI + response.request().url().query()).get().build();
+                response = client.newCall(request).execute();
+
+                res = response.body().string();
+                return true;
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
         }
 
         @Override
@@ -248,7 +304,7 @@ public class NeuNet {
 
             if (res == null) {
                 listener.getState(LOGIN_ERROR);
-            } else if (res.contains(userName)) {
+            } else if (res.contains("success")) {
                 if(isPc){
                     listener.getState(PC_LOGIN_SUCCESS);
                 }else {
@@ -280,19 +336,39 @@ public class NeuNet {
         @Override
         protected Boolean doInBackground(String... params) {
 
-            String k = String.valueOf((int) (10000 + Math.random() * (99999 - 10000 + 1)));
-            String updateUrl = "https://ipgw.neu.edu.cn/include/auth_action.php";
+//            String k = String.valueOf((int) (10000 + Math.random() * (99999 - 10000 + 1)));
+//            String updateUrl = "https://ipgw.neu.edu.cn/include/auth_action.php";
+//            OkHttpClient client = new OkHttpClient().newBuilder().
+//                    sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
+//                    .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+//                    .build();
+//            FormBody.Builder builder = new FormBody.Builder();
+//            builder.add("action", "get_online_info")
+//                    .add("k", k)
+//                    .add("key", k);
+//            FormBody body = builder.build();
+//            Request request = new Request.Builder().url(updateUrl).post(body).build();
+//            okhttp3.Response response;
+//            try {
+//                response = client.newCall(request).execute();
+//                res = response.body().string();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return false;
+//            }
+//            return true;
+
+            String infoAPI = "https://ipgw.neu.edu.cn/cgi-bin/rad_user_info";
+
             OkHttpClient client = new OkHttpClient().newBuilder().
                     sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
                     .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
                     .build();
-            FormBody.Builder builder = new FormBody.Builder();
-            builder.add("action", "get_online_info")
-                    .add("k", k)
-                    .add("key", k);
-            FormBody body = builder.build();
-            Request request = new Request.Builder().url(updateUrl).post(body).build();
+
+            Request request = new Request.Builder().url(infoAPI)
+                    .header("Accept", "application/json;").get().build();
             okhttp3.Response response;
+
             try {
                 response = client.newCall(request).execute();
                 res = response.body().string();
@@ -307,23 +383,23 @@ public class NeuNet {
         protected void onPostExecute(Boolean aBoolean) {
             Log.e(TAG, "onPostExecute: info "+res );
 
-            if (res == null) {
+            if (StringUtil.isBlank(res)){
                 inforListener.getInfor(null, null, null);
-            } else if (res.equals("not_online")) {
-                inforListener.getInfor(null, null, null);
-            } else {
-                String[] data = res.split(",");
-                if (data.length != 6) {
-                    inforListener.getInfor(null, null, null);
-                } else {
-                    Log.e(TAG, "onPostExecute: 流量" + data[0]);
-                    double flowTemp = Double.parseDouble(data[0]);
-                    String money = data[2];
-                    String flow = String.valueOf((int) (flowTemp / 1048576));
-                    String ip = data[5];
-                    inforListener.getInfor(flow, money, ip);
-                }
+                return;
             }
+
+            JSONObject jsonObject = JSONObject.parseObject(res);
+            if(!"ok".equals(jsonObject.get("error").toString())){
+                inforListener.getInfor(null, null, null);
+                return;
+            }
+
+            Double sumBytes =  jsonObject.getDouble("sum_bytes")/1024/1024;
+            String flow = String.format("%.3f", sumBytes);
+            String onlineIP = jsonObject.get("online_ip").toString();
+            String money = String.format("%.3f", jsonObject.getDouble("user_balance"));
+            inforListener.getInfor(flow, money, onlineIP);
+
         }
     }
 
